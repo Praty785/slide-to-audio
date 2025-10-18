@@ -39,5 +39,3 @@ if uploaded_files:
                 st.audio(audio_data, format="audio/mp3")
                 st.download_button("Download MP3", audio_data, file_name=f"{uploaded_file.name}.mp3")
                 os.remove(audio_file)
-```
-

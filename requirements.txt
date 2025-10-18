@@ -2,4 +2,3 @@ streamlit
 pillow
 pytesseract
 gTTS
-tesseract-ocr

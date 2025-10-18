@@ -1,13 +1,13 @@
 import streamlit as st
 from PIL import Image
-import pytesseract
+import easyocr
 from gtts import gTTS
 import os
 
 st.set_page_config(page_title="Lecture to Audio", layout="wide")
 st.title("Lecture Slide to Audio Converter")
-st.write("Upload slides - AI reads text - Download audio")
 
+reader = easyocr.Reader(['en'])
 uploaded_files = st.file_uploader("Upload slides", type=["png","jpg","jpeg"], accept_multiple_files=True)
 
 if uploaded_files:
@@ -21,7 +21,8 @@ if uploaded_files:
         
         with col2:
             with st.spinner("Reading text"):
-                text = pytesseract.image_to_string(image)
+                results = reader.readtext(image)
+                text = "\n".join([result[1] for result in results])
             
             if not text.strip():
                 text = "No text found"
@@ -34,8 +35,6 @@ if uploaded_files:
                 tts.save(audio_file)
                 
                 with open(audio_file, 'rb') as f:
-                    audio_data = f.read()
-                
-                st.audio(audio_data, format="audio/mp3")
-                st.download_button("Download MP3", audio_data, file_name=f"{uploaded_file.name}.mp3")
-                os.remove(audio_file)
+                    st.audio(f.read(), format="audio/mp3")
+                    st.download_button("Download MP3", f.read(), file_name=f"{uploaded_file.name}.mp3")
+```
